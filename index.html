@@ -1,0 +1,93 @@
+<html>
+    <head>
+	<meta charset="UTF-8">
+<head>
+	<style>
+		@import url(main.css)
+	</style>
+    <title>글자수 계산기</title>
+
+    </head>
+    <body>
+        <div class="center">
+            <textarea id="counter" class="counter" onkeyup="counter();"></textarea>
+           
+            <div id="result" class="result">공백 포함 : 0자<br> 공백 제외 : 0자<br>바이트 크기(EUC 기준) : 0Byte<br>바이트 크기(UTF 기준) : 0Byte<br>한국어 : 0자<br>영어 : 0자<br>숫자 : 0자<br>특수문자 : 0자 </div>
+        </div>
+        <script>
+		function ByteLength_EUC(content) {
+			if (content == null || content.length == 0) {
+				return 0;
+			}
+			var size = 0;
+
+			for ( var i = 0; i < content.length; i++) {
+				size += this.ByteChar_EUC(content.charAt(i));
+			}
+
+			return size;
+		}
+		function ByteLength_UTF(content) {
+			if (content == null || content.length == 0) {
+				return 0;
+			}
+			var size = 0;
+
+			for ( var i = 0; i < content.length; i++) {
+				size += this.ByteChar_UTF(content.charAt(i));
+			}
+
+			return size;
+		}
+		function ByteChar_EUC(ch) {
+			if (ch == null || ch.length == 0) {
+				return 0;
+			}
+			var charCode = ch.charCodeAt(0);
+			if (charCode <= 0x00007F) {
+				return 1;
+			} else if (charCode <= 0x00FFFF) {
+				return 2;
+			}  
+			else {
+				return 4;
+			}
+		}
+		function ByteChar_UTF(ch) {
+			if (ch == null || ch.length == 0) {
+				return 0;
+			}
+			var charCode = ch.charCodeAt(0);
+			if (charCode <= 0x00007F) {
+				return 1;
+			} else if (charCode <= 0x0007FF) {
+				return 2;
+			} else if (charCode <= 0x00FFFF) {
+				return 3;
+			} else {
+				return 4;
+			}
+		}
+        function counter() {
+			var content = document.getElementById("counter").value;
+            localStorage.setItem("save", content);
+            var english = content.replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/gi, "").replace(/[0-9]/gi, "").replace(/[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi, "").replace(/\s/gi, "").replace(/\s/gi, "").replace(/(\r\n\t|\n|\r\t)/gm,"");;
+            var korean = content.replace(/[a-zA-Z]/gi, "").replace(/[0-9]/gi, "").replace(/[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi, "").replace(/\s/gi, "").replace(/(\r\n\t|\n|\r\t)/gm,"");
+            var number = content.replace(/[a-zA-Z]/gi, "").replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/gi, "").replace(/[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi, "").replace(/\s/gi, "").replace(/(\r\n\t|\n|\r\t)/gm,"");
+            var special = content.replace(/[a-zA-Z]/gi, "").replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/gi, "").replace(/[0-9]/gi, "").replace(/\s/gi, "").replace(/(\r\n\t|\n|\r\t)/gm,"");
+            var space =  content.replace(/[a-zA-Z]/gi, "").replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/gi, "").replace(/[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi, "").replace(/[0-9]/gi, "").replace(/(\r\n\t|\n|\r\t)/gm,"");
+            var line = content.replace(/[a-zA-Z]/gi, "").replace(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]/gi, "").replace(/[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"]/gi, "").replace(/[0-9]/gi, "").replace(/ /gi, "");
+            var result = english.length + (korean.length * 3) +  number.length + special.length + space.length + (line.length * 2);
+            document.getElementById('result').innerHTML = 
+			"공백 포함 : " + content.length 
+			+"자<br>공백 제외 : " + content.replace(/(\r\n\t|\n|\r\t)/gm,"").replace(/ /gi, "").length 
+			+ "자<br> " + "바이트 크기(EUC 기준) : " + ByteLength_EUC(content) +"Byte<br>"
+			+ "바이트 크기(UTF 기준) : " + ByteLength_UTF(content) +"Byte<br>"
+			+ "한국어 : " + korean.length + "자<br>"
+			+ "영어 : " + english.length + "자<br>"
+			+ "숫자 : " + number.length + "자<br>"
+			+ "특수문자 : " + special.length + "자";
+        }    
+        </script>
+    </body>
+</html>
